@@ -7,14 +7,17 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends redis-server \
     && rm -rf /var/lib/apt/lists/*
 
-ENV NODE_ENV=production \
-    PORT=9000
-
+# NOTE: NODE_ENV stays unset (development) during install/build so npm keeps
+# devDependencies (typescript, vite) that `medusa build` needs. Production
+# mode is set after the build, before runtime.
 WORKDIR /app
 COPY shop/package.json shop/package-lock.json* ./
 RUN npm install
 COPY shop/ ./
 RUN npm run build
+
+ENV NODE_ENV=production \
+    PORT=9000
 
 EXPOSE 9000
 
