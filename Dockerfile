@@ -1,5 +1,6 @@
 # Medusa v2 backend + admin dashboard + bundled Redis (single free-tier box).
-# Node 22 satisfies the >=22 engine requirement; Debian bookworm repos work.
+# Build context is the REPO ROOT (Render defaults: dockerfilePath ./Dockerfile);
+# only shop/ is copied in. Node 22 satisfies the >=22 engine requirement.
 FROM node:22-bookworm-slim
 
 RUN apt-get update \
@@ -10,9 +11,9 @@ ENV NODE_ENV=production \
     PORT=9000
 
 WORKDIR /app
-COPY package.json package-lock.json* ./
+COPY shop/package.json shop/package-lock.json* ./
 RUN npm install
-COPY . .
+COPY shop/ ./
 RUN npm run build
 
 EXPOSE 9000
