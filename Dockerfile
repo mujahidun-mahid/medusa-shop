@@ -25,6 +25,6 @@ ENV NODE_ENV=production \
 
 EXPOSE 9000
 
-# TEMPORARY diagnostic: run the probe server instead of the shop, to verify
-# platform, env injection, redis binary, and admin files via the live URL.
-CMD ["sh", "-c", "node probe.js"]
+# Production boot: bundled Redis, no-op migrate guard, then the server.
+# (Seed data was provisioned externally; the seed script also self-skips.)
+CMD ["sh", "-c", "redis-server --daemonize yes --save '' --appendonly no && npx medusa db:migrate && npx medusa start --port ${PORT:-9000} --host 0.0.0.0"]
