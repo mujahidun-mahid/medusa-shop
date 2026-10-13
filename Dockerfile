@@ -22,5 +22,5 @@ ENV NODE_ENV=production \
 EXPOSE 9000
 
 # Ephemeral in-container Redis (queues/cache; shop data lives in Postgres).
-# Seed script is idempotent: it exits early when products already exist.
-CMD ["sh", "-c", "redis-server --daemonize yes --save '' --appendonly no && npx medusa db:migrate && npx medusa exec ./src/scripts/seed.ts && npx medusa start --port ${PORT:-9000} --host 0.0.0.0"]
+# DB is migrated + seeded externally; boot only re-runs the no-op migrate.
+CMD ["sh", "-c", "redis-server --daemonize yes --save '' --appendonly no && npx medusa db:migrate && npx medusa start --port ${PORT:-9000} --host 0.0.0.0"]
