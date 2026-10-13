@@ -25,6 +25,5 @@ ENV NODE_ENV=production \
 
 EXPOSE 9000
 
-# Production boot: bundled Redis, no-op migrate guard, then the server.
-# (Seed data was provisioned externally; the seed script also self-skips.)
-CMD ["sh", "-c", "redis-server --daemonize yes --save '' --appendonly no && npx medusa db:migrate && npx medusa start --port ${PORT:-9000} --host 0.0.0.0"]
+# TEMPORARY: probe server (goes live fast) to drive boot stages observably.
+CMD ["sh", "-c", "node probe.js"]
