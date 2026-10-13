@@ -1,0 +1,27 @@
+# Render.com blueprint for the Medusa shop backend.
+# Push this repo to GitHub, then Render dashboard -> New -> Blueprint.
+services:
+  - type: web
+    name: medusa-shop
+    runtime: docker
+    dockerContext: ./shop
+    dockerfilePath: ./shop/Dockerfile
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        value: redis://127.0.0.1:6379
+      - key: JWT_SECRET
+        generateValue: true
+      - key: COOKIE_SECRET
+        generateValue: true
+      - key: STORE_CORS
+        value: https://medusa-shop.onrender.com
+      - key: ADMIN_CORS
+        value: https://medusa-shop.onrender.com
+      - key: AUTH_CORS
+        value: https://medusa-shop.onrender.com
+      - key: PORT
+        value: "9000"
