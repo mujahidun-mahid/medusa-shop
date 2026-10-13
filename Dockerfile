@@ -15,6 +15,9 @@ COPY shop/package.json shop/package-lock.json* ./
 RUN npm install
 COPY shop/ ./
 RUN npm run build
+# medusa start serves the admin from <root>/public/admin, but the build
+# emits it to .medusa/server/public/admin — sync the two.
+RUN mkdir -p public && cp -r .medusa/server/public/admin ./public/admin
 
 ENV NODE_ENV=production \
     PORT=9000 \

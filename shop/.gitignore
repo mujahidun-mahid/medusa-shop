@@ -2,6 +2,7 @@ node_modules
 .medusa
 .cache
 dist
+public
 .env
 .env.*
 !.env.example
