@@ -17,7 +17,8 @@ COPY shop/ ./
 RUN npm run build
 
 ENV NODE_ENV=production \
-    PORT=9000
+    PORT=9000 \
+    NODE_OPTIONS=--max-old-space-size=320
 
 EXPOSE 9000
 
