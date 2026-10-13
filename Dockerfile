@@ -25,6 +25,6 @@ ENV NODE_ENV=production \
 
 EXPOSE 9000
 
-# Boot-phase pingbacks (Render hides container logs): each stage reports to a
-# webhook bin so failures are visible externally. All curls are best-effort.
-CMD ["sh", "-c", "(curl -m 10 'https://webhook.site/15c60bfd-cb3b-41e8-a8ed-2004a4fe29eb?stage=boot' || true); ls public/admin > /tmp/ls.txt 2>&1; (curl -m 10 --data-urlencode files@/tmp/ls.txt 'https://webhook.site/15c60bfd-cb3b-41e8-a8ed-2004a4fe29eb?stage=ls-admin' || true); redis-server --daemonize yes --save '' --appendonly no && (curl -m 10 'https://webhook.site/15c60bfd-cb3b-41e8-a8ed-2004a4fe29eb?stage=redis-ok' || true) && npx medusa db:migrate && (curl -m 10 'https://webhook.site/15c60bfd-cb3b-41e8-a8ed-2004a4fe29eb?stage=migrate-ok' || true) && npx medusa start --port ${PORT:-9000} --host 0.0.0.0"]
+# DIAGNOSTIC boot: report each stage externally (Render hides container logs),
+# then idle (no server) so stage results can be read. NOT for production.
+CMD ["sh", "-c", "(curl -m 10 'https://webhook.site/15c60bfd-cb3b-41e8-a8ed-2004a4fe29eb?stage=boot' || true); redis-server --daemonize yes --save '' --appendonly no; (curl -m 10 \"https://webhook.site/15c60bfd-cb3b-41e8-a8ed-2004a4fe29eb?stage=redis-exit$?\" || true); npx medusa db:migrate; (curl -m 10 \"https://webhook.site/15c60bfd-cb3b-41e8-a8ed-2004a4fe29eb?stage=migrate-exit$?\" || true); tail -f /dev/null"]
